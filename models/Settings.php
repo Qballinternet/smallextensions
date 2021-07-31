@@ -9,7 +9,7 @@ class Settings extends Model
 
     public $implement = [
         'System.Behaviors.SettingsModel',
-        '@RainLab.Translate.Behaviors.TranslatableModel',
+        '@Winter.Translate.Behaviors.TranslatableModel',
     ];
 
     public $translatable = [
