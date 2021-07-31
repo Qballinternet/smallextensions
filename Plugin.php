@@ -45,11 +45,11 @@ class Plugin extends PluginBase {
      */
 
     // Check for Rainlab.Blog plugin
-    $pluginManager = PluginManager::instance()->findByIdentifier('Rainlab.Blog');
+    $pluginManager = PluginManager::instance()->findByIdentifier('Winter.Blog');
 
     if ($pluginManager && !$pluginManager->disabled) {
 
-      \RainLab\Blog\Models\Post::extend(function($model) {
+      \Winter\Blog\Models\Post::extend(function($model) {
         $model->hasOne['custom_fields'] = ['JanVince\SmallExtensions\Models\BlogFields', 'delete' => 'true', 'key' => 'post_id', 'otherKey' => 'id'];
         $model->attachOne = ['featured_image' => ['System\Models\File']];
 
@@ -57,9 +57,9 @@ class Plugin extends PluginBase {
          * If Blog plugin exists but there is no custom_repeater column, create it
          * Mostly because Rainlab Blog plugin was installed after Small Extensions
          */
-        if (Schema::hasTable('rainlab_blog_posts') and !Schema::hasColumn('rainlab_blog_posts', 'custom_repeater')) 
+        if (Schema::hasTable('winter_blog_posts') and !Schema::hasColumn('winter_blog_posts', 'custom_repeater')) 
         {
-          Schema::table('rainlab_blog_posts', function($table)
+          Schema::table('winter_blog_posts', function($table)
           {
               $table->text('custom_repeater')->nullable();
           });
@@ -93,7 +93,7 @@ class Plugin extends PluginBase {
           /**
           *  Other users only for user with correct permission
           */
-          if( BackendAuth::getUser()->hasAccess('rainlab.blog.access_other_posts') ) {
+          if( BackendAuth::getUser()->hasAccess('winter.blog.access_other_posts') ) {
             $users = UserModel::get();
 
             $usersFormated = [];
@@ -115,9 +115,9 @@ class Plugin extends PluginBase {
 
       });
 
-        \RainLab\Blog\Controllers\Posts::extendListColumns(function($list, $model)
+        \Winter\Blog\Controllers\Posts::extendListColumns(function($list, $model)
         {
-            if (!$model instanceof \RainLab\Blog\Models\Post) {
+            if (!$model instanceof \Winter\Blog\Models\Post) {
                 return;
             }
 
@@ -187,18 +187,18 @@ class Plugin extends PluginBase {
     }
 
     // Check for Rainlab.User plugin
-    $pluginManagerUser = PluginManager::instance()->findByIdentifier('Rainlab.User');
+    $pluginManagerUser = PluginManager::instance()->findByIdentifier('Winter.User');
 
     if ( ($pluginManager && !$pluginManager->disabled) and  
         ($pluginManagerUser && !$pluginManagerUser->disabled) ){
 
-      \RainLab\Blog\Models\Post::extend(function($model) {
+      \Winter\Blog\Models\Post::extend(function($model) {
           
         $usersFormated = [];
 
-        if( Settings::get('blog_rainlab_user') ) {
+        if( Settings::get('blog_winter_user') ) {
 
-            $users = \Rainlab\User\Models\User::get();
+            $users = \Winter\User\Models\User::get();
 
             foreach($users as $user){
                 $usersFormated[$user->id] = ($user->surname . ' ' . $user->name);
@@ -206,7 +206,7 @@ class Plugin extends PluginBase {
 
         } 
             
-        $model->addDynamicMethod('listRainlabUsers', function() use($usersFormated) {
+        $model->addDynamicMethod('listWinterUsers', function() use($usersFormated) {
             return $usersFormated;
         });
             
@@ -215,7 +215,7 @@ class Plugin extends PluginBase {
 
       \JanVince\SmallExtensions\Models\BlogFields::extend(function($model) {
 
-        $model->belongsTo['rainlab_user'] = ['Rainlab\User\Models\User', 'key' => 'rainlab_user_id', 'otherKey' => 'id'];
+        $model->belongsTo['winter_user'] = ['Winter\User\Models\User', 'key' => 'winter_user_id', 'otherKey' => 'id'];
 
       });
 
@@ -223,11 +223,11 @@ class Plugin extends PluginBase {
 
     Event::listen('backend.form.extendFields', function($widget) {
 
-      if (!$widget->getController() instanceof \RainLab\Blog\Controllers\Posts) {
+      if (!$widget->getController() instanceof \Winter\Blog\Controllers\Posts) {
         return;
       }
 
-      if (!$widget->model instanceof \RainLab\Blog\Models\Post) {
+      if (!$widget->model instanceof \Winter\Blog\Models\Post) {
         return;
       }
 
@@ -244,7 +244,7 @@ class Plugin extends PluginBase {
         * WYSIWYG editor
         */
         $wysiwyg_editor = [
-          'tab' => 'rainlab.blog::lang.post.tab_edit',
+          'tab' => 'winter.blog::lang.post.tab_edit',
           'stretch' => 'true'
         ];
 
@@ -258,7 +258,7 @@ class Plugin extends PluginBase {
         /*
          * Check the Rainlab.Translate plugin is installed
          */
-        $pluginManager = PluginManager::instance()->findByIdentifier('Rainlab.Translate');
+        $pluginManager = PluginManager::instance()->findByIdentifier('Winter.Translate');
         if ($pluginManager && !$pluginManager->disabled) {
           $wysiwyg_editor['type'] = 'mlricheditor';
         } else {
@@ -307,7 +307,7 @@ class Plugin extends PluginBase {
         /**
         *  Empty option only for user with correct permission
         */
-        if( BackendAuth::getUser()->hasAccess('rainlab.blog.access_other_posts') ) {
+        if( BackendAuth::getUser()->hasAccess('winter.blog.access_other_posts') ) {
           $field['user_id']['emptyOption'] = 'janvince.smallextensions::lang.labels.author_empty';
         }
 
@@ -320,22 +320,22 @@ class Plugin extends PluginBase {
       * Rainlab User field
       */
     // Check for Rainlab.User plugin
-    $pluginManagerUser = PluginManager::instance()->findByIdentifier('Rainlab.User');
+    $pluginManagerUser = PluginManager::instance()->findByIdentifier('Winter.User');
 
-      if( ($pluginManagerUser && !$pluginManagerUser->disabled) and Settings::get('blog_rainlab_user') ) {
+      if( ($pluginManagerUser && !$pluginManagerUser->disabled) and Settings::get('blog_winter_user') ) {
 
         $field = [
-          'custom_fields[rainlab_user_id]' => [
-            'label' => 'janvince.smallextensions::lang.labels.rainlab_user',
-            'comment' => 'janvince.smallextensions::lang.labels.rainlab_user_comment',
+          'custom_fields[winter_user_id]' => [
+            'label' => 'janvince.smallextensions::lang.labels.winter_user',
+            'comment' => 'janvince.smallextensions::lang.labels.winter_user_comment',
             'span' => 'left',
             'type' => 'dropdown',
-            'options' => 'listRainlabUsers',
+            'options' => 'listWinterUsers',
             'tab' => 'janvince.smallextensions::lang.tabs.custom_fields'
           ],
         ];
 
-        $field['custom_fields[rainlab_user_id]']['emptyOption'] = 'janvince.smallextensions::lang.labels.rainlab_user_empty';
+        $field['custom_fields[winter_user_id]']['emptyOption'] = 'janvince.smallextensions::lang.labels.winter_user_empty';
 
         $widget->addSecondaryTabFields( $field );
 
@@ -360,7 +360,7 @@ class Plugin extends PluginBase {
         /*
          * Check the Rainlab.Translate plugin is installed
          */
-        $pluginManager = PluginManager::instance()->findByIdentifier('Rainlab.Translate');
+        $pluginManager = PluginManager::instance()->findByIdentifier('Winter.Translate');
         
         if ($pluginManager && !$pluginManager->disabled) 
         {
@@ -394,7 +394,7 @@ class Plugin extends PluginBase {
          */
          // TODO: Translation not work with relation - find out more about this!
 
-        $pluginManager = PluginManager::instance()->findByIdentifier('Rainlab.Translate');
+        $pluginManager = PluginManager::instance()->findByIdentifier('Winter.Translate');
         if ($pluginManager && !$pluginManager->disabled) {
           $string['type'] = 'text';  // TODO: Find out why 'mltext' not work.
         } else {
@@ -425,7 +425,7 @@ class Plugin extends PluginBase {
          */
          // TODO: Translation not work with relation - find out more about this!
 
-        $pluginManager = PluginManager::instance()->findByIdentifier('Rainlab.Translate');
+        $pluginManager = PluginManager::instance()->findByIdentifier('Winter.Translate');
         if ($pluginManager && !$pluginManager->disabled) {
           $string['type'] = 'richeditor';  // TODO: Find out why 'mlricheditor' not work.
         } else {
@@ -514,7 +514,7 @@ class Plugin extends PluginBase {
           'span' => 'left',
           'deferredBinding' => 'true',
           'mode' => 'image',
-          'tab' => 'rainlab.blog::lang.post.tab_manage'
+          'tab' => 'winter.blog::lang.post.tab_manage'
         ];
 
         $featuredImageTitle = [
@@ -522,7 +522,7 @@ class Plugin extends PluginBase {
           'comment' => 'janvince.smallextensions::lang.labels.custom_fields_featured_image_title_description',
           'type' => 'text',
           'span' => 'right',
-          'tab' => 'rainlab.blog::lang.post.tab_manage'
+          'tab' => 'winter.blog::lang.post.tab_manage'
         ];
 
         $featuredImageAlt = [
@@ -531,13 +531,13 @@ class Plugin extends PluginBase {
           'type' => 'textarea',
           'span' => 'right',
           'size' => 'tiny',
-          'tab' => 'rainlab.blog::lang.post.tab_manage'
+          'tab' => 'winter.blog::lang.post.tab_manage'
         ];
 
         $featuredImageSection = [
           'type' => 'section',
           'label' => 'janvince.smallextensions::lang.labels.custom_fields_featured_image_description',
-          'tab' => 'rainlab.blog::lang.post.tab_manage'
+          'tab' => 'winter.blog::lang.post.tab_manage'
         ];
 
         if(empty(Settings::get('blog_featured_image_both', null))) 
@@ -571,13 +571,13 @@ class Plugin extends PluginBase {
           'span' => 'left',
           'deferredBinding' => 'true',
           'mode' => 'image',
-          'tab' => 'rainlab.blog::lang.post.tab_manage'
+          'tab' => 'winter.blog::lang.post.tab_manage'
         ];
 
         $featuredImageSection = [
           'type' => 'section',
           'label' => 'janvince.smallextensions::lang.labels.custom_fields_featured_image_upload_description',
-          'tab' => 'rainlab.blog::lang.post.tab_manage'
+          'tab' => 'winter.blog::lang.post.tab_manage'
         ];
 
 
@@ -589,11 +589,11 @@ class Plugin extends PluginBase {
 
     });
     // Check for Rainlab.Blog plugin
-    $pluginManager = PluginManager::instance()->findByIdentifier('Rainlab.Blog');
+    $pluginManager = PluginManager::instance()->findByIdentifier('Winter.Blog');
 
     if ($pluginManager && !$pluginManager->disabled) {
 
-        \RainLab\Blog\Models\Post::extend(function($model) {
+        \Winter\Blog\Models\Post::extend(function($model) {
           $model->hasOne['custom_fields_repeater'] = ['JanVince\SmallExtensions\Models\BlogFields', 'delete' => 'true', 'key' => 'post_id', 'otherKey' => 'id'];
 
           /*
@@ -609,11 +609,11 @@ class Plugin extends PluginBase {
 
         Event::listen('backend.form.extendFields', function($widget) {
 
-          if (!$widget->getController() instanceof \RainLab\Blog\Controllers\Posts) {
+          if (!$widget->getController() instanceof \Winter\Blog\Controllers\Posts) {
             return;
           }
 
-          if (!$widget->model instanceof \RainLab\Blog\Models\Post) {
+          if (!$widget->model instanceof \Winter\Blog\Models\Post) {
             return;
           }
 
@@ -704,7 +704,7 @@ class Plugin extends PluginBase {
               */
               $repeaterType = 'repeater';
 
-              $pluginManager = PluginManager::instance()->findByIdentifier('Rainlab.Translate');
+              $pluginManager = PluginManager::instance()->findByIdentifier('Winter.Translate');
 
               if ($pluginManager && !$pluginManager->disabled) {
                 $repeaterType = 'mlrepeater';
@@ -760,11 +760,11 @@ class Plugin extends PluginBase {
                 /**
                  * Mimic translate plugin with locales field
                  */
-                $pluginManager = PluginManager::instance()->findByIdentifier('Rainlab.Translate');
+                $pluginManager = PluginManager::instance()->findByIdentifier('Winter.Translate');
 
                 if ($pluginManager && !$pluginManager->disabled && Settings::get('blog_custom_fields_repeater_allow_locale')) {
 
-                  $localeModel = new \RainLab\Translate\Models\Locale;
+                  $localeModel = new \Winter\Translate\Models\Locale;
                   $localeArray = $localeModel->listEnabled();
 
                   $repeaterFields['repeater_locale'] = [
@@ -850,7 +850,7 @@ class Plugin extends PluginBase {
                */
                // TODO: Translation not work with relation - find out more about this!
 
-              $pluginManager = PluginManager::instance()->findByIdentifier('Rainlab.Translate');
+              $pluginManager = PluginManager::instance()->findByIdentifier('Winter.Translate');
               if ($pluginManager && !$pluginManager->disabled) {
                 $repeater['type'] = 'repeater';  // TODO: Find out why 'mlrepeater' not work.
               } else {
@@ -875,8 +875,8 @@ class Plugin extends PluginBase {
       Event::listen('backend.form.extendFields', function ($widget) {
 
         if (
-          !$widget->getController() instanceof \RainLab\Pages\Controllers\Index ||
-          !$widget->model instanceof \RainLab\Pages\Classes\MenuItem
+          !$widget->getController() instanceof \Winter\Pages\Controllers\Index ||
+          !$widget->model instanceof \Winter\Pages\Classes\MenuItem
         ) {
           return;
         }
@@ -896,8 +896,8 @@ class Plugin extends PluginBase {
 
           Event::listen('backend.form.extendFields', function ($widget) {
 
-            if (!$widget->getController() instanceof \RainLab\Pages\Controllers\Index ||
-                !$widget->model instanceof \RainLab\Pages\Classes\MenuItem) {
+            if (!$widget->getController() instanceof \Winter\Pages\Controllers\Index ||
+                !$widget->model instanceof \Winter\Pages\Classes\MenuItem) {
               return;
             }
 
@@ -920,7 +920,7 @@ class Plugin extends PluginBase {
 
           Event::listen('backend.form.extendFields', function ($widget) {
 
-            if (!$widget->getController() instanceof \RainLab\Pages\Controllers\Index || !$widget->model instanceof \RainLab\Pages\Classes\MenuItem) {
+            if (!$widget->getController() instanceof \Winter\Pages\Controllers\Index || !$widget->model instanceof \Winter\Pages\Classes\MenuItem) {
               return;
             }
 
@@ -942,11 +942,11 @@ class Plugin extends PluginBase {
 
       Event::listen('backend.form.extendFields', function($widget) {
 
-        if (!$widget->getController() instanceof \RainLab\Pages\Controllers\Index) {
+        if (!$widget->getController() instanceof \Winter\Pages\Controllers\Index) {
           return;
         }
 
-        if (!$widget->model instanceof \RainLab\Pages\Classes\Page) {
+        if (!$widget->model instanceof \Winter\Pages\Classes\Page) {
           return;
         }
 
@@ -954,7 +954,7 @@ class Plugin extends PluginBase {
 
         foreach( $tabs->secondary->fields as $name => $field ) {
 
-          if($name <> 'rainlab.pages::lang.editor.content'){
+          if($name <> 'winter.pages::lang.editor.content'){
             $tabs->primary->fields[$name] = $field;
             unset($tabs->secondary->fields[$name]);
           }
@@ -1082,7 +1082,7 @@ class Plugin extends PluginBase {
 
 
         // If Rainlab.Translate is not present, bypass translate filters
-        $pluginManager = PluginManager::instance()->findByIdentifier('Rainlab.Translate');
+        $pluginManager = PluginManager::instance()->findByIdentifier('Winter.Translate');
 
         if (!$pluginManager or ($pluginManager and $pluginManager->disabled)) {
   
