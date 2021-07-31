@@ -9,7 +9,7 @@ class BlogFields extends Model
 
     protected $primaryKey = 'id';
 
-    public $implement = ['@RainLab.Translate.Behaviors.TranslatableModel'];
+    public $implement = ['@Winter.Translate.Behaviors.TranslatableModel'];
 
     public $translatable = [
         'api_code',
@@ -27,7 +27,7 @@ class BlogFields extends Model
     protected $jsonable = ['repeater'];
 
     public $belongsTo = [
-        'post' => ['RainLab\Blog\Models\Post', 'key' => 'post_id', 'otherKey' => 'id'],
+        'post' => ['Winter\Blog\Models\Post', 'key' => 'post_id', 'otherKey' => 'id'],
     ];
 
 }
