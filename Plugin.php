@@ -265,7 +265,7 @@ class Plugin extends PluginBase {
           $wysiwyg_editor['type'] = 'richeditor';
         }
 
-        $widget->addSecondaryTabFields(['content' => $wysiwyg_editor]);
+        $widget->addTabFields(['content' => $wysiwyg_editor]);
 
       }
 
@@ -311,7 +311,7 @@ class Plugin extends PluginBase {
           $field['user_id']['emptyOption'] = 'janvince.smallextensions::lang.labels.author_empty';
         }
 
-        $widget->addSecondaryTabFields( $field );
+        $widget->addTabFields( $field );
 
         $widget->removeField('user');
       }
@@ -337,7 +337,7 @@ class Plugin extends PluginBase {
 
         $field['custom_fields[winter_user_id]']['emptyOption'] = 'janvince.smallextensions::lang.labels.winter_user_empty';
 
-        $widget->addSecondaryTabFields( $field );
+        $widget->addTabFields( $field );
 
       }
 
@@ -369,7 +369,7 @@ class Plugin extends PluginBase {
           $fields['custom_fields[api_code]']['type'] = 'text';
         }
 
-        $widget->addSecondaryTabFields($fields);
+        $widget->addTabFields($fields);
 
 
         // dump($widget->model);
@@ -401,7 +401,7 @@ class Plugin extends PluginBase {
           $string['type'] = 'text';
         }
 
-        $widget->addSecondaryTabFields([
+        $widget->addTabFields([
           'custom_fields[string]' => $string
         ]);
 
@@ -432,7 +432,7 @@ class Plugin extends PluginBase {
           $string['type'] = 'richeditor';
         }
 
-        $widget->addSecondaryTabFields([
+        $widget->addTabFields([
           'custom_fields[text]' => $string
         ]);
 
@@ -457,7 +457,7 @@ class Plugin extends PluginBase {
           $datetime['format'] = 'd.m.Y';
         }
 
-        $widget->addSecondaryTabFields([
+        $widget->addTabFields([
           'custom_fields[datetime]' => $datetime
         ]);
 
@@ -468,7 +468,7 @@ class Plugin extends PluginBase {
       */
       if(Settings::get('blog_custom_fields_switch')) {
 
-        $widget->addSecondaryTabFields([
+        $widget->addTabFields([
           'custom_fields[switch]' => [
             'label' => ( Settings::get('blog_custom_fields_switch_label') ? Settings::get('blog_custom_fields_switch_label') : 'janvince.smallextensions::lang.labels.custom_fields_switch'),
             'comment' => 'janvince.smallextensions::lang.labels.custom_fields_switch_description',
@@ -496,7 +496,7 @@ class Plugin extends PluginBase {
           'tab' => 'janvince.smallextensions::lang.tabs.custom_fields'
         ];
 
-        $widget->addSecondaryTabFields([
+        $widget->addTabFields([
           'custom_fields[image]' => $image
         ]);
 
@@ -545,14 +545,14 @@ class Plugin extends PluginBase {
           $widget->removeField('featured_images');
         }
 
-        $widget->addSecondaryTabFields([
+        $widget->addTabFields([
           'section_featured_image' => $featuredImageSection,
           'custom_fields[featured_image]' => $featuredImage,
         ]);
 
         if(Settings::get('blog_featured_image_meta')) 
         {
-          $widget->addSecondaryTabFields([
+          $widget->addTabFields([
             'custom_fields[featured_image_title]' => $featuredImageTitle,
             'custom_fields[featured_image_alt]' => $featuredImageAlt,
           ]);
@@ -581,7 +581,7 @@ class Plugin extends PluginBase {
         ];
 
 
-        $widget->addSecondaryTabFields([
+        $widget->addTabFields([
           'section_featured_image_upload' => $featuredImageSection,
           'featured_image' => $featuredImage,
         ]);
@@ -717,11 +717,11 @@ class Plugin extends PluginBase {
 
               if(Settings::get('custom_repeater_simple', null) )
               {
-                $widget->addSecondaryTabFields($fields);
+                $widget->addTabFields($fields);
               }
               else
               {
-                $widget->addSecondaryTabFields([
+                $widget->addTabFields([
                     'custom_repeater' => [
                         'type' => $repeaterType,
                         'prompt' => Settings::get('custom_repeater_prompt', '+'),
@@ -857,7 +857,7 @@ class Plugin extends PluginBase {
                 $repeater['type'] = 'repeater';
               }
 
-              $widget->addSecondaryTabFields([
+              $widget->addTabFields([
                 'custom_fields[repeater]' => $repeater
               ]);
 
